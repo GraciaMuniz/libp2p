@@ -31,3 +31,5 @@ shareddata.*
 /.apt_generated/
 
 /src/test/java/org/tron/p2p/dns/PublishTest.java
+
+gradle.properties

@@ -8,6 +8,8 @@ import io.netty.channel.DefaultMessageSizeEstimator;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.tron.p2p.base.Parameter;
@@ -36,9 +38,9 @@ public class PeerServer {
   }
 
   public void start(int port) {
-    EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    EventLoopGroup bossGroup = getEventLoopGroup(1);
     //if threads = 0, it is number of core * 2
-    EventLoopGroup workerGroup = new NioEventLoopGroup(Parameter.TCP_NETTY_WORK_THREAD_NUM);
+    EventLoopGroup workerGroup = getEventLoopGroup(Parameter.TCP_NETTY_WORK_THREAD_NUM);
     P2pChannelInitializer p2pChannelInitializer = new P2pChannelInitializer("", false, true);
     try {
       ServerBootstrap b = new ServerBootstrap();
@@ -73,4 +75,12 @@ public class PeerServer {
     }
   }
 
+  private EventLoopGroup getEventLoopGroup(int nThread) {
+    EventLoopGroup group;
+    if (Epoll.isAvailable()) {
+      return new EpollEventLoopGroup(nThread);
+    } else {
+      return new NioEventLoopGroup(nThread);
+    }
+  }
 }
