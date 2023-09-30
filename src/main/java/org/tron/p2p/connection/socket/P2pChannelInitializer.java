@@ -4,14 +4,13 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.FixedRecvByteBufAllocator;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.Setter;
+import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.tron.p2p.connection.Channel;
 import org.tron.p2p.connection.ChannelManager;
 
 @Slf4j(topic = "net")
-public class P2pChannelInitializer extends ChannelInitializer<NioSocketChannel> {
+public class P2pChannelInitializer extends ChannelInitializer<SocketChannel> {
 
   private final String remoteId;
 
@@ -25,7 +24,7 @@ public class P2pChannelInitializer extends ChannelInitializer<NioSocketChannel> 
   }
 
   @Override
-  public void initChannel(NioSocketChannel ch) {
+  public void initChannel(SocketChannel ch) {
     try {
       final Channel channel = new Channel();
       channel.init(ch.pipeline(), remoteId, peerDiscoveryMode);

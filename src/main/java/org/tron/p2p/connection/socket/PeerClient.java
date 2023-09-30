@@ -6,7 +6,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.DefaultMessageSizeEstimator;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +16,7 @@ import org.tron.p2p.discover.Node;
 import org.tron.p2p.utils.NetUtil;
 
 import static org.tron.p2p.utils.NetUtil.getEventLoopGroup;
+import static org.tron.p2p.utils.NetUtil.setChannel;
 
 @Slf4j(topic = "net")
 public class PeerClient {
@@ -84,7 +84,7 @@ public class PeerClient {
 
     Bootstrap b = new Bootstrap();
     b.group(workerGroup);
-    b.channel(NioSocketChannel.class);
+    setChannel(b);
     b.option(ChannelOption.SO_KEEPALIVE, true);
     b.option(ChannelOption.MESSAGE_SIZE_ESTIMATOR, DefaultMessageSizeEstimator.DEFAULT);
     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Parameter.NODE_CONNECTION_TIMEOUT);

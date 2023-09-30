@@ -17,10 +17,16 @@ import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.tron.p2p.base.Constant;
@@ -218,4 +224,19 @@ public class NetUtil {
     }
   }
 
+  public static void setChannel(ServerBootstrap b) {
+    if (Epoll.isAvailable()) {
+      b.channel(EpollServerSocketChannel.class);
+    } else {
+      b.channel(NioServerSocketChannel.class);
+    }
+  }
+
+  public static void setChannel(Bootstrap b) {
+    if (Epoll.isAvailable()) {
+      b.channel(EpollSocketChannel.class);
+    } else {
+      b.channel(NioSocketChannel.class);
+    }
+  }
 }
