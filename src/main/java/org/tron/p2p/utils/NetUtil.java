@@ -20,11 +20,9 @@ import java.util.regex.Pattern;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.epoll.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -237,6 +235,14 @@ public class NetUtil {
       b.channel(EpollSocketChannel.class);
     } else {
       b.channel(NioSocketChannel.class);
+    }
+  }
+
+  public static void setChannelUdp(Bootstrap b) {
+    if (Epoll.isAvailable()) {
+      b.channel(EpollDatagramChannel.class);
+    } else {
+      b.channel(NioDatagramChannel.class);
     }
   }
 }
