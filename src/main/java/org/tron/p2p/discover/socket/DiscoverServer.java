@@ -4,13 +4,15 @@ import java.util.concurrent.TimeUnit;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import lombok.extern.slf4j.Slf4j;
 import org.tron.p2p.base.Parameter;
 import org.tron.p2p.stats.TrafficStats;
+
+import static org.tron.p2p.utils.NetUtil.getEventLoopGroup;
 
 @Slf4j(topic = "net")
 public class DiscoverServer {
@@ -46,7 +48,7 @@ public class DiscoverServer {
   }
 
   private void start() throws Exception {
-    NioEventLoopGroup group = new NioEventLoopGroup(Parameter.UDP_NETTY_WORK_THREAD_NUM);
+    EventLoopGroup group = getEventLoopGroup(Parameter.UDP_NETTY_WORK_THREAD_NUM);
     try {
       while (!shutdown) {
         Bootstrap b = new Bootstrap();

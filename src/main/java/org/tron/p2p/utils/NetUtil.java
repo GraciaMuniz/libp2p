@@ -14,7 +14,13 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
+
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.tron.p2p.base.Constant;
@@ -195,4 +201,21 @@ public class NetUtil {
           + "use ipv4:port or [ipv6]:port", para));
     }
   }
+
+  public static EventLoopGroup getEventLoopGroup(int nThread) {
+    if (Epoll.isAvailable()) {
+      return new EpollEventLoopGroup(nThread);
+    } else {
+      return new NioEventLoopGroup(nThread);
+    }
+  }
+
+  public static EventLoopGroup getEventLoopGroup(int nThread, ThreadFactory threadFactory) {
+    if (Epoll.isAvailable()) {
+      return new EpollEventLoopGroup(nThread, threadFactory);
+    } else {
+      return new NioEventLoopGroup(nThread, threadFactory);
+    }
+  }
+
 }

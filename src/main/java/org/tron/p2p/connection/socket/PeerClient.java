@@ -6,7 +6,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.DefaultMessageSizeEstimator;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,13 +16,15 @@ import org.tron.p2p.connection.ChannelManager;
 import org.tron.p2p.discover.Node;
 import org.tron.p2p.utils.NetUtil;
 
+import static org.tron.p2p.utils.NetUtil.getEventLoopGroup;
+
 @Slf4j(topic = "net")
 public class PeerClient {
 
   private EventLoopGroup workerGroup;
 
   public void init() {
-    workerGroup = new NioEventLoopGroup(0, new ThreadFactory() {
+    workerGroup = getEventLoopGroup(0, new ThreadFactory() {
       private final AtomicInteger cnt = new AtomicInteger(0);
 
       @Override

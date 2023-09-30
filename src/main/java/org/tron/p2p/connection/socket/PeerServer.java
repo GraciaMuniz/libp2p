@@ -6,13 +6,12 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.DefaultMessageSizeEstimator;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.tron.p2p.base.Parameter;
+
+import static org.tron.p2p.utils.NetUtil.getEventLoopGroup;
 
 @Slf4j(topic = "net")
 public class PeerServer {
@@ -72,15 +71,6 @@ public class PeerServer {
       workerGroup.shutdownGracefully();
       bossGroup.shutdownGracefully();
       listening = false;
-    }
-  }
-
-  private EventLoopGroup getEventLoopGroup(int nThread) {
-    EventLoopGroup group;
-    if (Epoll.isAvailable()) {
-      return new EpollEventLoopGroup(nThread);
-    } else {
-      return new NioEventLoopGroup(nThread);
     }
   }
 }
