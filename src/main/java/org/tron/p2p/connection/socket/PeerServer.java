@@ -49,6 +49,7 @@ public class PeerServer {
 
       b.option(ChannelOption.MESSAGE_SIZE_ESTIMATOR, DefaultMessageSizeEstimator.DEFAULT);
       b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Parameter.NODE_CONNECTION_TIMEOUT);
+      b.childOption(ChannelOption.TCP_NODELAY, true);
 
       b.handler(new LoggingHandler());
       b.childHandler(p2pChannelInitializer);
