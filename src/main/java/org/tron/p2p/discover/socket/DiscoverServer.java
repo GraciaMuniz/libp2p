@@ -3,15 +3,17 @@ package org.tron.p2p.discover.socket;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.tron.p2p.base.Parameter;
 import org.tron.p2p.stats.TrafficStats;
+
+import static org.tron.p2p.utils.NetUtil.getEventLoopGroup;
+import static org.tron.p2p.utils.NetUtil.setChannelUdp;
 
 @Slf4j(topic = "net")
 public class DiscoverServer {
@@ -48,16 +50,15 @@ public class DiscoverServer {
   }
 
   private void start() throws Exception {
-    NioEventLoopGroup group = new NioEventLoopGroup(Parameter.UDP_NETTY_WORK_THREAD_NUM,
-        new BasicThreadFactory.Builder().namingPattern("discoverServer").build());
+    EventLoopGroup group = getEventLoopGroup(Parameter.UDP_NETTY_WORK_THREAD_NUM, "discoverServer");
     try {
       while (!shutdown) {
         Bootstrap b = new Bootstrap();
-        b.group(group)
-            .channel(NioDatagramChannel.class)
-            .handler(new ChannelInitializer<NioDatagramChannel>() {
+        b.group(group);
+        setChannelUdp(b);
+        b.handler(new ChannelInitializer<DatagramChannel>() {
               @Override
-              public void initChannel(NioDatagramChannel ch)
+              public void initChannel(DatagramChannel ch)
                   throws Exception {
                 ch.pipeline().addLast(TrafficStats.udp);
                 ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());

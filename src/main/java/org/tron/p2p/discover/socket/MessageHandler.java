@@ -7,7 +7,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j(topic = "net")
@@ -18,7 +17,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<UdpEvent>
 
   private EventHandler eventHandler;
 
-  public MessageHandler(NioDatagramChannel channel, EventHandler eventHandler) {
+  public MessageHandler(Channel channel, EventHandler eventHandler) {
     this.channel = channel;
     this.eventHandler = eventHandler;
   }
