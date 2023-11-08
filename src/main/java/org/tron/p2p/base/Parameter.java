@@ -40,17 +40,18 @@ public class Parameter {
 
   public static volatile List<P2pEventHandler> handlerList = new ArrayList<>();
 
-  public static volatile Map<Byte, P2pEventHandler> handlerMap = new HashMap<>();
+//  public static volatile Map<Byte, P2pEventHandler> handlerMap = new HashMap<>();
+  public static volatile P2pEventHandler[] handlerMap = new P2pEventHandler[256];
 
   public static void addP2pEventHandle(P2pEventHandler p2PEventHandler) throws P2pException {
     if (p2PEventHandler.getMessageTypes() != null) {
       for (Byte type : p2PEventHandler.getMessageTypes()) {
-        if (handlerMap.get(type) != null) {
+        if (handlerMap[type] != null) {
           throw new P2pException(TypeEnum.TYPE_ALREADY_REGISTERED, "type:" + type);
         }
       }
       for (Byte type : p2PEventHandler.getMessageTypes()) {
-        handlerMap.put(type, p2PEventHandler);
+        handlerMap[type] = p2PEventHandler;
       }
     }
     handlerList.add(p2PEventHandler);
