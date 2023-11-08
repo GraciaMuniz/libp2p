@@ -210,11 +210,7 @@ public class ChannelManager {
 
     Message message = Message.parse(data);
 
-    if (message.needToLog()) {
-      log.info("Receive message from channel: {}, {}", channel.getInetSocketAddress(), message);
-    } else {
-      log.debug("Receive message from channel {}, {}", channel.getInetSocketAddress(), message);
-    }
+    log.debug("Receive message from {}, {}", channel.getInetSocketAddress(), message);
 
     switch (message.getType()) {
       case KEEP_ALIVE_PING:
@@ -236,7 +232,7 @@ public class ChannelManager {
   }
 
   private static void handMessage(Channel channel, byte[] data) throws P2pException {
-    P2pEventHandler handler = Parameter.handlerMap.get(data[0]);
+    P2pEventHandler handler = Parameter.handlerMap[data[0]];
     if (handler == null) {
       throw new P2pException(P2pException.TypeEnum.NO_SUCH_MESSAGE, "type:" + data[0]);
     }
