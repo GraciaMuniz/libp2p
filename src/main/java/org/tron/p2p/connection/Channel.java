@@ -136,11 +136,7 @@ public class Channel {
   }
 
   public void send(Message message) {
-    if (message.needToLog()) {
-      log.info("Send message to channel {}, {}", inetSocketAddress, message);
-    } else {
-      log.debug("Send message to channel {}, {}", inetSocketAddress, message);
-    }
+    log.debug("Send message to channel {}, {}", inetSocketAddress, message);
     send(message.getSendData());
   }
 
