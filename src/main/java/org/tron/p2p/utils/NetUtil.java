@@ -24,7 +24,17 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -247,5 +257,37 @@ public class NetUtil {
       lanIP = "127.0.0.1";
     }
     return lanIP;
+  }
+
+  public static EventLoopGroup getEventLoopGroup(int nThread, String namePattern) {
+    if (Epoll.isAvailable()) {
+      return new EpollEventLoopGroup(nThread, new BasicThreadFactory.Builder().namingPattern(namePattern).build());
+    } else {
+      return new NioEventLoopGroup(nThread, new BasicThreadFactory.Builder().namingPattern(namePattern).build());
+    }
+  }
+
+  public static void setChannel(ServerBootstrap b) {
+    if (Epoll.isAvailable()) {
+      b.channel(EpollServerSocketChannel.class);
+    } else {
+      b.channel(NioServerSocketChannel.class);
+    }
+  }
+
+  public static void setChannel(Bootstrap b) {
+    if (Epoll.isAvailable()) {
+      b.channel(EpollSocketChannel.class);
+    } else {
+      b.channel(NioSocketChannel.class);
+    }
+  }
+
+  public static void setChannelUdp(Bootstrap b) {
+    if (Epoll.isAvailable()) {
+      b.channel(EpollDatagramChannel.class);
+    } else {
+      b.channel(NioDatagramChannel.class);
+    }
   }
 }
